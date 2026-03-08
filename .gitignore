@@ -1,5 +1,11 @@
 # env
 env
+.env
+.env*
+!.env.example
+
+# Flickr search results
+ghost-pub-app/pub_photos.json
 
 # DS_Store
 *.DS_Store
