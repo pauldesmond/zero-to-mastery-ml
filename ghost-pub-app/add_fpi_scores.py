@@ -28,12 +28,12 @@ PUB_NAMES_CSV = SCRIPT_DIR / "pub_names.csv"
 FPI_LOOKUP_CSV = SCRIPT_DIR / "fpi_lookup.csv"
 VOA_JSON = Path("/tmp/voa/pub-risk.json")
 
-# FPI score → category thresholds (estimated from ismypubfucked.com examples)
+# FPI score → category thresholds (from ismypubfucked.com)
 CATEGORIES = [
-    (15, "somehow fine"),
+    (10, "somehow fine"),
     (30, "feeling it"),
     (60, "struggling"),
-    (85, "fucked"),
+    (90, "fucked"),
     (101, "absolutely fucked"),
 ]
 
