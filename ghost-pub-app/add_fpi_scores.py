@@ -104,9 +104,28 @@ def load_voa_data():
     return pubs, by_area
 
 
+def get_candidates(postcode_area_code, by_area):
+    """Get VOA candidates for a postcode area, expanding short codes.
+
+    If 'EC' has no direct matches, expand to EC1, EC2, EC3, EC4 etc.
+    Similarly 'W' expands to W1, W2, ... W14, 'SW' to SW1..SW20.
+    """
+    candidates = by_area.get(postcode_area_code, [])
+    if candidates:
+        return candidates
+
+    # Try expanding: 'EC' -> 'EC1', 'EC2', etc.
+    all_candidates = []
+    prefix = postcode_area_code.upper()
+    for area_key in by_area:
+        if area_key.startswith(prefix) and area_key != prefix:
+            all_candidates.extend(by_area[area_key])
+    return all_candidates
+
+
 def find_best_match(pub_name, postcode_area_code, by_area):
     """Find the best matching VOA pub by name within a postcode area."""
-    candidates = by_area.get(postcode_area_code, [])
+    candidates = get_candidates(postcode_area_code, by_area)
     if not candidates:
         return None
 
