@@ -114,10 +114,16 @@ def postcode_area(postcode):
 def compute_fpi_score(pct_change):
     """Compute FPI score (0-100) from rateable value percentage change.
 
-    Formula reverse-engineered from ismypubfucked.com data points:
-      -78.4% -> 0, +79.4% -> 48, +622% -> 100, +632% -> 100
+    Piecewise linear formula reverse-engineered from ismypubfucked.com:
+      <= 0%:   score = 0
+      0-100%:  score = round(pct * 0.6)           # slope 0.6
+      > 100%:  score = min(100, 60 + round((pct - 100) * 0.3))  # slope 0.3
     """
-    return max(0, min(100, round(pct_change * 0.6)))
+    if pct_change <= 0:
+        return 0
+    if pct_change <= 100:
+        return int(pct_change * 0.6 + 0.5)
+    return min(100, 60 + int((pct_change - 100) * 0.3 + 0.5))
 
 
 def fpi_category(pct_change):
