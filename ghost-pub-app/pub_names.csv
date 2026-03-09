@@ -1,0 +1,9 @@
+pub_name,location,postcode_area,photo_url,fpi_score,fpi_category
+Cat & Mutton,"Broadway Market, London",E8,https://live.staticflickr.com/example/cat_mutton.jpg,47,struggling
+Crown & Shuttle,"Shoreditch High Street, London",E1,https://live.staticflickr.com/example/crown_shuttle.jpg,77,fucked
+Princess Of Prussia,"Prescot Street, London",E1,https://live.staticflickr.com/example/princess_prussia.jpg,47,struggling
+The Lemon Tree,"Bedfordbury, London",WC2,https://live.staticflickr.com/example/lemon_tree.jpg,32,struggling
+Bradleys Spanish Bar,"Hanway Street, London",W1,https://live.staticflickr.com/example/bradleys_spanish.jpg,48,struggling
+Prince Of Wales,"Cleaver Square, London",SE11,https://live.staticflickr.com/example/prince_wales.jpg,54,struggling
+Hero Of Maida,"Shirland Road, London",W9,https://live.staticflickr.com/example/hero_maida.jpg,62,fucked
+Rose & Crown,"Colombo Street, London",SE1,https://live.staticflickr.com/example/rose_crown.jpg,84,fucked
