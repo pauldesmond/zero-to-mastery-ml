@@ -4,7 +4,7 @@ Extract pub names and locations from Flickr album photo titles.
 Fetches photos from albums named "London Pubs (EC)", "London Pubs (EC1)", etc.
 and parses the title of each photo to extract the pub name and location.
 
-Output: pub_names.csv with columns: pub_name, location, postcode_area
+Output: pub_names.csv with columns: pub_name, location, postcode_area, photo_url
 
 Usage:
     python extract_pub_names.py
@@ -147,10 +147,15 @@ def main():
             if not title:
                 continue
             pub_name, location = parse_title(title)
+            server = photo.get("server", "")
+            photo_id = photo.get("id", "")
+            secret = photo.get("secret", "")
+            photo_url = f"https://live.staticflickr.com/{server}/{photo_id}_{secret}_b.jpg"
             all_pubs.append({
                 "pub_name": pub_name,
                 "location": location,
                 "postcode_area": area,
+                "photo_url": photo_url,
             })
 
         print(f"  Extracted {len(photos)} entries\n")
@@ -159,7 +164,7 @@ def main():
     # Step 4: Write CSV
     output_path = Path(__file__).parent / "pub_names.csv"
     with open(output_path, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=["pub_name", "location", "postcode_area"])
+        writer = csv.DictWriter(f, fieldnames=["pub_name", "location", "postcode_area", "photo_url"])
         writer.writeheader()
         writer.writerows(all_pubs)
 
