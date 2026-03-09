@@ -124,6 +124,8 @@ def fpi_category(score):
     """Return FPI category label for a given score."""
     if score == 0:
         return "somehow fine"
+    if score < 30:
+        return "feeling it"
     if score < 60:
         return "struggling"
     if score < 100:
