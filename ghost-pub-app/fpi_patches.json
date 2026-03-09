@@ -1,0 +1,23 @@
+[
+  {"id": "v38", "name": "Pelt Trader", "fpi": 4, "rv_change_pct": 7.4, "fpi_severity": "feeling_it"},
+  {"id": "v68", "name": "Nightjar", "fpi": 12, "rv_change_pct": 20.7, "fpi_severity": "feeling_it"},
+  {"id": "v78", "name": "Clement Attlee", "fpi": 14, "rv_change_pct": 22.7, "fpi_severity": "feeling_it"},
+  {"id": "v82", "name": "The Arbitrager", "fpi": 19, "rv_change_pct": 31.6, "fpi_severity": "feeling_it"},
+  {"id": "v83", "name": "The Bolter", "fpi": 6, "rv_change_pct": 10.1, "fpi_severity": "feeling_it"},
+  {"id": "v106", "name": "The Astronomer", "fpi": 10, "rv_change_pct": 16.4, "fpi_severity": "feeling_it"},
+  {"id": "v111", "name": "Seahorse Fleet Street", "fpi": 5, "rv_change_pct": 8.2, "fpi_severity": "feeling_it"},
+  {"id": "v113", "name": "Cask Pub & Kitchen", "fpi": 4, "rv_change_pct": 5.9, "fpi_severity": "feeling_it"},
+  {"id": "v117", "name": "The Grapes Limehouse", "fpi": 32, "rv_change_pct": 52.8, "fpi_severity": "struggling"},
+  {"id": "v768", "name": "Real Drinks Maida Vale", "fpi": 47, "rv_change_pct": 77.9, "fpi_severity": "struggling"},
+  {"id": "v774", "name": "Oyster Shed", "fpi": 5, "rv_change_pct": 7.9, "fpi_severity": "feeling_it"},
+  {"id": "v901", "name": "King & Co", "fpi": 19, "rv_change_pct": 31.8, "fpi_severity": "feeling_it"},
+  {"id": "v902", "name": "Old Town Tavern", "fpi": 21, "rv_change_pct": 34.2, "fpi_severity": "feeling_it"},
+  {"id": "v910", "name": "The Craft Beer Co. (Clerkenwell)", "fpi": 4, "rv_change_pct": 6.6, "fpi_severity": "feeling_it"},
+  {"id": "v911", "name": "Mother Kelly's", "fpi": 12, "rv_change_pct": 19.4, "fpi_severity": "feeling_it"},
+  {"id": "v927", "name": "The Sea Horse", "fpi": 5, "rv_change_pct": 8.2, "fpi_severity": "feeling_it"},
+  {"id": "v35", "name": "Market Porter", "fpi": 12, "rv_change_pct": 19.7, "fpi_severity": "feeling_it"},
+  {"id": "v64", "name": "Cat & Mutton", "fpi": 47, "rv_change_pct": 78.8, "fpi_severity": "struggling"},
+  {"id": "v80", "name": "Eleanor Arms", "fpi": 23, "rv_change_pct": 37.5, "fpi_severity": "feeling_it"},
+  {"id": "v769", "name": "Hero of Maida", "fpi": 62, "rv_change_pct": 106.9, "fpi_severity": "fucked"},
+  {"id": "v94", "name": "Magpie & Stump", "fpi": 0, "fpi_severity": "fine"}
+]
