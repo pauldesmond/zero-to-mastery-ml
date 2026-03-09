@@ -59,8 +59,8 @@ ALBUM_IDS = {
     "W1":  "72157605337274095",
     "WC2": "72157616336466071",
     "NW1": "72157616447806043",
-    # TODO: find SW1 album ID on Flickr and add here
-    # "SW1": "",
+    "SW":  "72157604260714645",
+    "SW1": "72157615589336765",
 }
 POSTCODE_AREAS = list(ALBUM_IDS.keys())
 
