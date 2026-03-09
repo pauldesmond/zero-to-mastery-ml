@@ -120,14 +120,25 @@ def compute_fpi_score(pct_change):
     return max(0, min(100, round(pct_change * 0.6)))
 
 
-def fpi_category(score):
-    """Return FPI category label for a given score."""
-    if score == 0:
+def fpi_category(pct_change):
+    """Return FPI category label based on raw percentage change.
+
+    Categories are determined by the raw % change, not the rounded score,
+    since rounding can place two pubs at the same score in different
+    categories (e.g. 49.4% and 50.0% both round to score 30, but the
+    site puts them in different categories).
+
+    Boundaries derived from ismypubfucked.com leaderboard:
+      <= 0%: somehow fine, < 50%: feeling it, < 100%: struggling,
+      < 668%: fucked, >= 668%: absolutely fucked
+    """
+    if pct_change <= 0:
         return "somehow fine"
-    if score < 30:
+    if pct_change < 50:
         return "feeling it"
-    if score < 60:
+    if pct_change < 100:
         return "struggling"
+    score = compute_fpi_score(pct_change)
     if score < 100:
         return "fucked"
     return "absolutely fucked"
@@ -348,7 +359,7 @@ def main():
             pct = float(pub["fpi_pct_change"])
             score = compute_fpi_score(pct)
             pub["fpi_score"] = str(score)
-            pub["fpi_category"] = fpi_category(score)
+            pub["fpi_category"] = fpi_category(pct)
             matched_fpi += 1
         else:
             pub["fpi_score"] = ""
