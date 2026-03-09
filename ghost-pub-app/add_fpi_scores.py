@@ -1,15 +1,18 @@
 """
 Enrich pub_names.csv with FPI scores and VOA rateable value data.
 
-Two data sources, each providing different columns:
+Two data sources:
 
 1. fpi_lookup.csv — Manually verified FPI scores from ismypubfucked.com.
-   This is the ONLY source of fpi_score and fpi_category, since the official
-   site uses normalisation we can't replicate from raw VOA data alone.
+   Used as override when available.
 
 2. /tmp/voa/pub-risk.json — VOA rating list data (from build_pub_risk.py).
    Matched by postcode area + fuzzy name + Flickr photo geotag proximity.
    Provides fpi_pct_change (raw rateable value % change) and voa_name.
+
+When no manual lookup exists, FPI scores are computed from VOA percentage
+change using the formula: score = clamp(round(pct_change * 0.6), 0, 100).
+This replicates the ismypubfucked.com scoring methodology.
 
 Output: Updates pub_names.csv with columns: fpi_score, fpi_category,
         fpi_pct_change, voa_name
@@ -106,6 +109,26 @@ def postcode_area(postcode):
     # Match the area part: letters followed by digits (e.g., E8, EC1, SW1, WC2)
     m = re.match(r"([A-Z]{1,2}\d{1,2})", postcode)
     return m.group(1) if m else postcode.split()[0] if postcode else ""
+
+
+def compute_fpi_score(pct_change):
+    """Compute FPI score (0-100) from rateable value percentage change.
+
+    Formula reverse-engineered from ismypubfucked.com data points:
+      -78.4% -> 0, +79.4% -> 48, +622% -> 100, +632% -> 100
+    """
+    return max(0, min(100, round(pct_change * 0.6)))
+
+
+def fpi_category(score):
+    """Return FPI category label for a given score."""
+    if score == 0:
+        return "somehow fine"
+    if score < 60:
+        return "struggling"
+    if score < 100:
+        return "fucked"
+    return "absolutely fucked"
 
 
 def load_voa_data():
@@ -296,18 +319,7 @@ def main():
     for pub in pubs:
         norm = normalise_name(pub["pub_name"])
 
-        # FPI score: only from manually-verified lookup
-        manual = manual_lookup.get(norm)
-        if manual:
-            pub["fpi_score"] = manual["fpi_score"]
-            pub["fpi_category"] = manual["fpi_category"]
-            matched_fpi += 1
-        else:
-            pub["fpi_score"] = ""
-            pub["fpi_category"] = ""
-            unmatched_fpi.append(pub["pub_name"])
-
-        # VOA data: raw % change and VOA name (independent of FPI score)
+        # VOA data: raw % change and VOA name
         pub["fpi_pct_change"] = ""
         pub["voa_name"] = ""
         if use_voa:
@@ -323,6 +335,23 @@ def main():
                 pub["fpi_pct_change"] = str(match["fpi"])
                 pub["voa_name"] = match["name"]
                 matched_voa += 1
+
+        # FPI score: prefer manual lookup, otherwise compute from VOA % change
+        manual = manual_lookup.get(norm)
+        if manual:
+            pub["fpi_score"] = manual["fpi_score"]
+            pub["fpi_category"] = manual["fpi_category"]
+            matched_fpi += 1
+        elif pub["fpi_pct_change"]:
+            pct = float(pub["fpi_pct_change"])
+            score = compute_fpi_score(pct)
+            pub["fpi_score"] = str(score)
+            pub["fpi_category"] = fpi_category(score)
+            matched_fpi += 1
+        else:
+            pub["fpi_score"] = ""
+            pub["fpi_category"] = ""
+            unmatched_fpi.append(pub["pub_name"])
 
     # Write updated CSV — preserve photo_lat/photo_lng if present
     fieldnames = [
