@@ -46,6 +46,7 @@ TARGET_USER_ID = "55935853@N00"
 
 # Known album IDs for target postcode areas (from Flickr user Ewan-M)
 ALBUM_IDS = {
+    # East / City
     "EC":  "72157604256269088",
     "EC1": "72157616552639515",
     "EC2": "72157616567050485",
@@ -54,6 +55,12 @@ ALBUM_IDS = {
     "E1":  "72157615628471244",
     "E2":  "72157615377618566",
     "E3":  "72157618342821571",
+    # West End / Central
+    "W1":  "72157605337274095",
+    "WC2": "72157616336466071",
+    "NW1": "72157616447806043",
+    # TODO: find SW1 album ID on Flickr and add here
+    # "SW1": "",
 }
 POSTCODE_AREAS = list(ALBUM_IDS.keys())
 
