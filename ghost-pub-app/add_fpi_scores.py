@@ -123,35 +123,80 @@ def get_candidates(postcode_area_code, by_area):
     return all_candidates
 
 
-def find_best_match(pub_name, postcode_area_code, by_area):
-    """Find the best matching VOA pub by name within a postcode area."""
+def extract_street(location):
+    """Extract street name from location like 'Broadway Market, London'."""
+    if not location:
+        return ""
+    # Take the part before the first comma (the street/area name)
+    street = location.split(",")[0].strip()
+    return street.upper()
+
+
+def name_in_voa_address(target, voa_full_address):
+    """Check if pub name appears anywhere in VOA address (not just first part).
+
+    Handles cases like 'GRD FLR 7 CHAPEL PLACE 320, OLD STREET'
+    where the pub name isn't the first comma-separated part.
+    """
+    norm_address = normalise_name(voa_full_address)
+    return target in norm_address
+
+
+def find_best_match(pub_name, postcode_area_code, by_area, location=""):
+    """Find the best matching VOA pub by name within a postcode area.
+
+    Uses both pub name and street/location to score candidates.
+    Scoring: name_match (0-2) + street_match (0-1)
+      - name exact match in first part = 2
+      - name found anywhere in address = 1
+      - street name found in address = 1
+    """
     candidates = get_candidates(postcode_area_code, by_area)
     if not candidates:
         return None
 
     target = normalise_name(pub_name)
+    street = extract_street(location)
 
     best_match = None
     best_score = 0
 
     for pub in candidates:
+        score = 0
         voa_pub_name = extract_pub_name_from_voa(pub["name"])
         norm_voa = normalise_name(voa_pub_name)
+        voa_full = pub["name"].upper()
 
-        # Exact match
+        # Name matching
         if norm_voa == target:
-            return pub
+            score += 3  # Perfect name match in first part
+        elif target in norm_voa or norm_voa in target:
+            score += 2  # Partial name match in first part
+        elif name_in_voa_address(target, pub["name"]):
+            score += 1  # Name found somewhere in full address
 
-        # Check if one contains the other
-        if target in norm_voa or norm_voa in target:
-            # Prefer longer matches
-            overlap = min(len(target), len(norm_voa))
-            if overlap > best_score:
-                best_score = overlap
-                best_match = pub
+        if score == 0:
+            continue
 
-    # Require a reasonable match quality
-    if best_match and best_score >= 3:
+        # Street/location matching (bonus for disambiguation)
+        if street and len(street) > 2:
+            # Check if street name appears in VOA address
+            # e.g., "BROADWAY MARKET" in "THE CAT AND MUTTON, 76, BROADWAY MARKET, LONDON"
+            if street in voa_full:
+                score += 2
+            else:
+                # Try individual words from street (at least 4 chars)
+                street_words = [w for w in street.split() if len(w) >= 4]
+                matches = sum(1 for w in street_words if w in voa_full)
+                if matches > 0:
+                    score += 1
+
+        if score > best_score:
+            best_score = score
+            best_match = pub
+
+    # Require at least a name match (score >= 1)
+    if best_match and best_score >= 1:
         return best_match
 
     return None
@@ -214,7 +259,8 @@ def main():
         # Try VOA match
         if use_voa:
             area = pub.get("postcode_area", "")
-            match = find_best_match(pub["pub_name"], area, by_area)
+            location = pub.get("location", "")
+            match = find_best_match(pub["pub_name"], area, by_area, location)
             if match:
                 score = match["percentile"]
                 pub["fpi_score"] = str(score)
